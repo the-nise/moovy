@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
-import { Library } from './library.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Library } from '../library/library.entity';
 
 @Entity()
 export class User {
@@ -18,7 +18,9 @@ export class User {
   @Column()
   password: string;
 
-  @OneToOne(type => Library)
-  @JoinColumn()
+  @Column()
+  isOwner: boolean;
+
+  @OneToOne(() => Library, (library) => library.id)
   library: Library;
 }

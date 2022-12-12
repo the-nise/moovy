@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { LibraryService } from './library.service';
 import { CreateLibraryDto } from './dto/create-library.dto';
 import { UpdateLibraryDto } from './dto/update-library.dto';
@@ -10,6 +18,14 @@ export class LibraryController {
   @Post()
   create(@Body() createLibraryDto: CreateLibraryDto) {
     return this.libraryService.create(createLibraryDto);
+  }
+
+  @Post(':userId')
+  async addMovieToLibrary(
+    @Param('userId') userId: number,
+    @Body('movieId') movieId: string,
+  ): Promise<void> {
+    return this.libraryService.addMovieToLibrary({ movieId, userId });
   }
 
   @Get()
@@ -27,8 +43,11 @@ export class LibraryController {
     return this.libraryService.update(+id, updateLibraryDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.libraryService.remove(+id);
+  @Delete('/:userId/:movieId')
+  async removeMovieFromLibrary(
+    @Param('userId') userId: number,
+    @Param('movieId') movieId: string,
+  ): Promise<void> {
+    return this.libraryService.removeMovieFromLibrary({ movieId, userId });
   }
 }

@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Library } from './../library/library.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Review {
@@ -8,4 +10,9 @@ export class Review {
   @Column()
   filename: string;
 
+  @ManyToOne(() => User, (user) => user.id)
+  user: User;
+
+  @ManyToOne(() => Library, (library) => library.review)
+  library: Library;
 }

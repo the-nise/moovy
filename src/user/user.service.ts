@@ -1,19 +1,53 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Repository } from 'typeorm';
+
+import { User } from './user.entity';
+import { Library } from '../library/library.entity';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    @InjectRepository(Library)
+    private libraryRepository: Repository<Library>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const userExists = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+    if (userExists) {
+      throw new Error('User already registered');
+    }
+
+    const library = await new Library();
+
+    const user = await new User();
+    Object.assign(user, { ...createUserDto } as User);
+    const dbUser = await this.userRepository.save(user);
+
+    library.user = dbUser;
+
+    await this.libraryRepository.save(library);
+    return dbUser;
   }
 
-  findAll() {
+  async findAll() {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+    });
+    if (!user) {
+      throw new Error('User doesnt exist');
+    }
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

@@ -1,23 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm';
-import { User } from './user.entity';
-import { Movie } from '../models/movie.model'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
+import { User } from '../user/user.entity';
+import { Review } from '../reviews/reviews.entity';
 
 @Entity()
 export class Library {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(type => User)
+  @Column()
+  movie: string;
+
+  @OneToMany(() => Review, (review) => review.library)
+  review: Review[];
+
+  @OneToOne(() => User, (user) => user.library)
   @JoinColumn()
   user: User;
-
-  @OneToMany(type => Movie)
-  @Column()
-  movies: Movie[];
-
-  @Column()
-  addedOn: Date;
-
-  @OneToMany(type => Review, review => review.movie)
-  reviews: Review[];
 }
