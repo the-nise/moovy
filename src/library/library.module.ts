@@ -5,10 +5,9 @@ import { Module } from '@nestjs/common';
 import { LibraryService } from './library.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LibraryController } from './library.controller';
-import { Review } from 'src/reviews/reviews.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Library, Review])],
+  imports: [TypeOrmModule.forFeature([User, Library])],
   controllers: [LibraryController],
   providers: [LibraryService, MovieClient],
 })

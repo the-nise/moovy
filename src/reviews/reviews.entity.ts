@@ -8,7 +8,10 @@ export class Review {
   id: number;
 
   @Column()
-  filename: string;
+  audioFilePath: string;
+
+  @Column()
+  syncStatus: 'synced' | 'pending';
 
   @ManyToOne(() => User, (user) => user.id)
   user: User;

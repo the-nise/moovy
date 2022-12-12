@@ -2,9 +2,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
-  JoinColumn,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Review } from '../reviews/reviews.entity';
@@ -20,7 +19,6 @@ export class Library {
   @OneToMany(() => Review, (review) => review.library)
   review: Review[];
 
-  @OneToOne(() => User, (user) => user.library)
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.library)
   user: User;
 }

@@ -3,51 +3,62 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { LibraryService } from './library.service';
-import { CreateLibraryDto } from './dto/create-library.dto';
-import { UpdateLibraryDto } from './dto/update-library.dto';
+import { Library } from './library.entity';
 
 @Controller('library')
 export class LibraryController {
   constructor(private readonly libraryService: LibraryService) {}
-
-  @Post()
-  create(@Body() createLibraryDto: CreateLibraryDto) {
-    return this.libraryService.create(createLibraryDto);
-  }
 
   @Post(':userId')
   async addMovieToLibrary(
     @Param('userId') userId: number,
     @Body('movieId') movieId: string,
   ): Promise<void> {
-    return this.libraryService.addMovieToLibrary({ movieId, userId });
+    try {
+      return this.libraryService.addMovieToLibrary({ movieId, userId });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  @Get()
-  findAll() {
-    return this.libraryService.findAll();
+  @Get(':userId')
+  findAllMoviesAddedToLibrary(
+    @Param('userId') userId: number,
+  ): Promise<Library[]> {
+    try {
+      return this.libraryService.findAllMoviesAddedToLibrary({ userId });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.libraryService.findOne(+id);
+  @Get(':userId/:movieId')
+  async findOneMovie(
+    @Param('userId') userId: number,
+    @Param('movieId') movieId: string,
+  ): Promise<Library | undefined> {
+    try {
+      return this.libraryService.findOneMovie({ userId, movieId });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLibraryDto: UpdateLibraryDto) {
-    return this.libraryService.update(+id, updateLibraryDto);
-  }
-
-  @Delete('/:userId/:movieId')
+  @Delete(':userId/:movieId')
   async removeMovieFromLibrary(
     @Param('userId') userId: number,
     @Param('movieId') movieId: string,
   ): Promise<void> {
-    return this.libraryService.removeMovieFromLibrary({ movieId, userId });
+    try {
+      return this.libraryService.removeMovieFromLibrary({ movieId, userId });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }
