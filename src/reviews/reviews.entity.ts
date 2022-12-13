@@ -11,7 +11,7 @@ export class Review {
   audioFilePath: string;
 
   @Column()
-  syncStatus: 'synced' | 'pending';
+  syncStatus: 'synced' | 'pending' | 'failed-sync';
 
   @ManyToOne(() => User, (user) => user.id)
   user: User;
