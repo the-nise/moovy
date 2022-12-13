@@ -6,6 +6,7 @@ import { Review } from './reviews.entity';
 import { Library } from 'src/library/library.entity';
 import { FileStorageService } from './file-storage.service';
 import { User } from 'src/user/user.entity';
+import { Blob } from 'buffer';
 
 @Injectable()
 export class ReviewsService {
@@ -19,11 +20,15 @@ export class ReviewsService {
     private libraryRepository: Repository<Library>,
   ) {}
 
-  async createReview(
-    userId: number,
-    libraryId: number,
-    reviewAudio: Blob,
-  ): Promise<Review> {
+  async createReview({
+    userId,
+    libraryId,
+    reviewAudio,
+  }: {
+    userId: number;
+    libraryId: number;
+    reviewAudio: Blob;
+  }): Promise<Review> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
       throw new Error(`User with ID ${userId} does not exist.`);
@@ -40,16 +45,21 @@ export class ReviewsService {
     review.user = user;
     review.library = library;
     review.syncStatus = 'pending';
+    await this.reviewRepository.save(review);
 
+    //try
     const audioFilePath = await this.fileStorageService.saveFile(
       reviewAudio,
       `../../content`,
       'reviews',
     );
-
     review.audioFilePath = audioFilePath;
+    review.syncStatus = 'synced';
+    await this.reviewRepository.save(review);
+    // catch
+    // if failed, don't save, throw exception, syncStatus = failed-sync
 
-    return this.reviewRepository.save(review);
+    return review;
   }
 
   async removeReview(reviewId: number): Promise<void> {
@@ -57,8 +67,8 @@ export class ReviewsService {
       where: { id: reviewId },
     });
 
-    await this.reviewRepository.remove(review);
-
     await this.fileStorageService.deleteFile(review.audioFilePath);
+
+    await this.reviewRepository.remove(review);
   }
 }

@@ -36,8 +36,8 @@ export class UserService {
     return dbUser;
   }
 
-  async findAll() {
-    return `This action returns all user`;
+  async findAll(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 
   async findOne(id: number) {

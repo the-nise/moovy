@@ -3,7 +3,8 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  ManyToOne,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Review } from '../reviews/reviews.entity';
@@ -13,12 +14,13 @@ export class Library {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   movie: string;
 
   @OneToMany(() => Review, (review) => review.library)
   review: Review[];
 
-  @ManyToOne(() => User, (user) => user.library)
+  @OneToOne(() => User, (user) => user.library)
+  @JoinColumn()
   user: User;
 }

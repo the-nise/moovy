@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Blob } from 'buffer';
 
 @Injectable()
 export class FileStorageService {
