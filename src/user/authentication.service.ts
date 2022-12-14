@@ -6,8 +6,7 @@ import { User } from './user.entity';
 export class AuthService {
   private readonly jwtSecretKey = 'SECRET_KEY';
 
-  // Generates a JWT for the given user
-  generateJwt(user: User): string {
+  generateJwt({ user }: { user: User }): string {
     return jwt.sign(
       {
         id: user.id,

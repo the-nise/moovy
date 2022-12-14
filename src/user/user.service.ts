@@ -5,56 +5,83 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 
 import { User } from './user.entity';
-import { Library } from '../library/library.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Library)
-    private libraryRepository: Repository<Library>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create({
+    createUserDto,
+  }: {
+    createUserDto: CreateUserDto;
+  }): Promise<User> {
     const userExists = await this.userRepository.findOne({
       where: { email: createUserDto.email },
     });
     if (userExists) {
       throw new Error('User already registered');
     }
-
-    const library = await new Library();
-
-    const user = await new User();
+    const user = new User();
     Object.assign(user, { ...createUserDto } as User);
     const dbUser = await this.userRepository.save(user);
-
-    library.user = dbUser;
-
-    await this.libraryRepository.save(library);
     return dbUser;
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+    try {
+      return this.userRepository.find({
+        select: ['id', 'firstName', 'lastName', 'email', 'isOwner'],
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
-  async findOne(id: number) {
+  async findOne({ id }: { id: number }) {
+    try {
+      return this.userRepository.findOne({
+        where: { id: id },
+        select: ['id', 'firstName', 'lastName', 'email', 'isOwner'],
+      });
+    } catch (error) {
+      throw new Error('User not found');
+    }
+  }
+
+  async update({
+    id,
+    updateUserDto,
+  }: {
+    id: number;
+    updateUserDto: UpdateUserDto;
+  }): Promise<void> {
     const user = await this.userRepository.findOne({
       where: { id: id },
     });
     if (!user) {
-      throw new Error('User doesnt exist');
+      throw new Error('User not found');
     }
-    return user;
+
+    try {
+      Object.assign(user, { ...updateUserDto } as User);
+      await this.userRepository.save(user);
+    } catch (error) {
+      throw new Error(
+        `Doesnt match given user's object format. Error: ${error}`,
+      );
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    await this.userRepository.remove(user);
   }
 }

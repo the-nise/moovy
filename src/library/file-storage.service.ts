@@ -5,11 +5,15 @@ import { Blob } from 'buffer';
 
 @Injectable()
 export class FileStorageService {
-  async saveFile(
-    file: Blob,
-    folder: string,
-    fileName: string,
-  ): Promise<string> {
+  async saveFile({
+    file,
+    folder,
+    fileName,
+  }: {
+    file: Blob;
+    folder: string;
+    fileName: string;
+  }): Promise<string> {
     const uniqueFileName = `${Date.now()}-${fileName}`;
     const filePath = path.join(
       __dirname,
@@ -27,7 +31,7 @@ export class FileStorageService {
     return `${folder}/${uniqueFileName}`;
   }
 
-  async deleteFile(filePath: string): Promise<void> {
+  async deleteFile({ filePath }: { filePath: string }): Promise<void> {
     const fullFilePath = path.join(__dirname, '../../content', filePath);
 
     await fs.promises.unlink(fullFilePath);
