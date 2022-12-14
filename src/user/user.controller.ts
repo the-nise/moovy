@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   HttpException,
@@ -21,7 +21,7 @@ export class UserController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     try {
-      return await this.userService.create(createUserDto);
+      return await this.userService.create({ createUserDto });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -34,16 +34,19 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOne({ id: +id });
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<void> {
+    await this.userService.update({ id, updateUserDto });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  async remove(@Param('id') id: number): Promise<void> {
+    await this.userService.remove(id);
   }
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Library } from '../library/library.entity';
 
 @Entity()
@@ -21,6 +21,6 @@ export class User {
   @Column()
   isOwner: boolean;
 
-  @OneToOne(() => Library, (library) => library.id)
+  @OneToMany(() => Library, (library) => library.id)
   library: Library[];
 }

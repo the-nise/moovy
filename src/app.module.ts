@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ReviewsModule } from './reviews/reviews.module';
 import { User } from './user/user.entity';
 import { LibraryModule } from './library/library.module';
 import { UserModule } from './user/user.module';
@@ -19,7 +18,6 @@ import { UserModule } from './user/user.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    ReviewsModule,
     User,
     UserModule,
     LibraryModule,

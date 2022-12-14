@@ -1,9 +1,12 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsBoolean } from 'class-validator';
 export class CreateLibraryDto {
   @IsNotEmpty()
   id: number;
 
-  @IsOptional()
   @IsString()
   movie: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  hasReview: boolean;
 }
