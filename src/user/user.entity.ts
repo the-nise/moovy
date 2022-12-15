@@ -22,5 +22,5 @@ export class User {
   isOwner: boolean;
 
   @OneToMany(() => Library, (library) => library.id)
-  library: Library[];
+  library: Promise<Library[]>;
 }

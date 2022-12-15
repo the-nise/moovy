@@ -177,7 +177,44 @@ export class LibraryService {
     }
   }
 
-  async rateMovie() {}
+  async rateMovie({
+    userId,
+    movieId,
+    rating,
+  }: {
+    userId: number;
+    movieId: string;
+    rating: number;
+  }): Promise<Library> {
+    const movieInLibrary = await this.libraryRepository
+      .createQueryBuilder('library')
+      .where('library.movie = :movieId', { movieId })
+      .andWhere('library.userId = :userId', { userId })
+      .getOne();
+    if (!movieInLibrary) {
+      throw new Error('Movie is not in the library');
+    }
 
-  async derateMovie() {}
+    movieInLibrary.rating = rating;
+    return this.libraryRepository.save(movieInLibrary);
+  }
+
+  async derateMovie({
+    userId,
+    movieId,
+  }: {
+    userId: number;
+    movieId: string;
+  }): Promise<Library> {
+    const movieInLibrary = await this.libraryRepository
+      .createQueryBuilder('library')
+      .where('library.movie = :movieId', { movieId })
+      .andWhere('library.userId = :userId', { userId })
+      .getOne();
+    if (!movieInLibrary) {
+      throw new Error('Movie is not in the library');
+    }
+    movieInLibrary.rating = null;
+    return this.libraryRepository.save(movieInLibrary);
+  }
 }

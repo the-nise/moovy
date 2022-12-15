@@ -5,8 +5,6 @@ import {
   Body,
   Param,
   Delete,
-  HttpException,
-  HttpStatus,
   Put,
 } from '@nestjs/common';
 import { LibraryService } from './library.service';
@@ -73,7 +71,11 @@ export class LibraryController {
     @Param('userId') userId: number,
     @Param('movieId') movieId: string,
   ): Promise<void> {
-    return this.libraryService.removeReview({ userId, movieId });
+    try {
+      return this.libraryService.removeReview({ userId, movieId });
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Delete(':userId/:movieId')
@@ -84,7 +86,39 @@ export class LibraryController {
     try {
       return this.libraryService.removeMovieFromLibrary({ userId, movieId });
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Put('rate/:userId/:movieId')
+  async rateMovie(
+    @Param('userId') userId: number,
+    @Param('movieId') movieId: string,
+    @Body('rating') rating: number,
+  ): Promise<Library> {
+    try {
+      return this.libraryService.rateMovie({
+        userId,
+        movieId,
+        rating,
+      });
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Put('derate/:userId/:movieId')
+  async derateMovie(
+    @Param('userId') userId: number,
+    @Param('movieId') movieId: string,
+  ): Promise<Library> {
+    try {
+      return this.libraryService.derateMovie({
+        userId,
+        movieId,
+      });
+    } catch (error) {
+      throw new BadRequestException(error);
     }
   }
 }

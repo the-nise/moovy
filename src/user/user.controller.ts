@@ -6,12 +6,12 @@ import {
   Put,
   Param,
   Delete,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { BadRequestException } from '@nestjs/common/exceptions';
+
 import { User } from './user.entity';
 
 @Controller('user')
@@ -23,18 +23,26 @@ export class UserController {
     try {
       return await this.userService.create({ createUserDto });
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new BadRequestException(error);
     }
   }
 
   @Get()
   findAll(): Promise<User[]> {
-    return this.userService.findAll();
+    try {
+      return this.userService.findAll();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne({ id: +id });
+    try {
+      return this.userService.findOne({ id: +id });
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Put(':id')
@@ -42,11 +50,19 @@ export class UserController {
     @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<void> {
-    await this.userService.update({ id, updateUserDto });
+    try {
+      await this.userService.update({ id, updateUserDto });
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<void> {
-    await this.userService.remove(id);
+    try {
+      await this.userService.remove(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }
