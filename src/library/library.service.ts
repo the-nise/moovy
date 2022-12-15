@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { Library } from './library.entity';
 import { MovieClient } from './../clients/movie.client';
-import { FileStorageService } from './file-storage.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,7 +16,6 @@ export class LibraryService {
     private userRepository: Repository<User>,
     @InjectRepository(Library)
     private libraryRepository: Repository<Library>,
-    private fileStorageService: FileStorageService,
   ) {}
   async findAllMoviesAddedToLibrary({
     userId,

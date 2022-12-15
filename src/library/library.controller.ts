@@ -52,7 +52,7 @@ export class LibraryController {
     }
   }
 
-  @Put('upload/:userId/:movieId')
+  @Put(':userId/:movieId/upload')
   @UseInterceptors(FileInterceptor('file'))
   async createReview(
     @Param('userId') userId: number,
@@ -90,7 +90,7 @@ export class LibraryController {
     }
   }
 
-  @Put('rate/:userId/:movieId')
+  @Put(':userId/:movieId/rate')
   async rateMovie(
     @Param('userId') userId: number,
     @Param('movieId') movieId: string,
@@ -107,7 +107,7 @@ export class LibraryController {
     }
   }
 
-  @Put('derate/:userId/:movieId')
+  @Put(':userId/:movieId/derate')
   async derateMovie(
     @Param('userId') userId: number,
     @Param('movieId') movieId: string,

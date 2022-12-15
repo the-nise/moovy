@@ -4,6 +4,7 @@ export class CreateLibraryDto {
   id: number;
 
   @IsString()
+  @IsNotEmpty()
   movie: string;
 
   @IsBoolean()
