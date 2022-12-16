@@ -9,7 +9,6 @@ export class MovieClient {
       const response = await axios.get(
         `https://www.omdbapi.com/?i=${id}&apikey=${this.apiKey}`,
       );
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error);
