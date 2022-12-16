@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Movie } from './movie';
 
 export class MovieClient {
-  private apiKey = '2d7c4406';
+  private apiKey = process.env.API_KEY;
 
   public async getMovie(id: string): Promise<Movie> {
     try {

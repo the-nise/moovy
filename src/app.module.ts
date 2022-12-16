@@ -10,16 +10,22 @@ import { LibraryModule } from './library/library.module';
 import { UserModule } from './user/user.module';
 import { AuthService } from './auth/authentication.service';
 import { LocalStrategy } from './auth/strategies/local.strategy';
+import { ConfigModule } from '@nestjs/config';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.HOST,
       port: 5432,
-      username: 'postgres',
-      password: 'loonachuu',
-      database: 'moovy',
+      username: process.env.USER,
+      password: process.env.PASSWORD,
+      database: process.env.DATABASE,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
