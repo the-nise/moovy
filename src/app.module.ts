@@ -1,5 +1,6 @@
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { JwtService } from '@nestjs/jwt';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { PassportModule } from '@nestjs/passport';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,6 +13,8 @@ import { AuthService } from './auth/authentication.service';
 import { LocalStrategy } from './auth/strategies/local.strategy';
 import { ConfigModule } from '@nestjs/config';
 import * as dotenv from 'dotenv';
+import { APP_GUARD } from '@nestjs/core';
+
 dotenv.config();
 
 @Module({
@@ -35,6 +38,16 @@ dotenv.config();
     PassportModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService, LocalStrategy, JwtService, JwtStrategy],
+  providers: [
+    AppService,
+    AuthService,
+    LocalStrategy,
+    JwtService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

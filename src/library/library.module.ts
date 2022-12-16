@@ -5,10 +5,11 @@ import { Module } from '@nestjs/common';
 import { LibraryService } from './library.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LibraryController } from './library.controller';
+import { LibraryRepository } from './library.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Library])],
   controllers: [LibraryController],
-  providers: [LibraryService, MovieClient],
+  providers: [LibraryService, MovieClient, LibraryRepository],
 })
 export class LibraryModule {}

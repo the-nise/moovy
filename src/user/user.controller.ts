@@ -13,11 +13,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { BadRequestException } from '@nestjs/common/exceptions';
 
 import { User } from './user.entity';
+import { Public } from 'src/utils/public';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Public()
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     try {
